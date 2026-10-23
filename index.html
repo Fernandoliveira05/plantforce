@@ -24,7 +24,7 @@
   --terracotta-ink:#A3502A; /* terracota escurecida para texto pequeno (AA) */
   --blue:#00A1E0; --amber:#F2A93B;
   --line:#E4DED0;
-  --text:#00A1E0; /* Azul Salesforce: cor do texto padrão */
+  --text:#112C5D; /* azul-marinho escuro: cor do texto padrão */
   --shadow-leaf:0 1px 2px rgba(26,46,34,0.06), 0 22px 44px -24px rgba(26,46,34,0.34);
   --ease-out:cubic-bezier(0.2,0.7,0.2,1);
   --gutter:72px;
@@ -261,23 +261,44 @@ button,input { font:inherit; color:inherit; }
 /* ---------- Casos de sucesso ---------- */
 .cases { position:relative; z-index:1; background:var(--paper); padding:150px 0 130px; }
 .split-head { display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,0.9fr); gap:80px; align-items:end; }
-.cases .split-head { margin-bottom:76px; }
-.people { list-style:none; display:flex; flex-wrap:wrap; justify-content:center; align-items:flex-start; gap:56px 24px; }
-.person { flex:0 0 calc((100% - 3 * 24px) / 4); }
-/* deslocamentos irregulares: um canteiro, não uma grade de catálogo */
-/* 4 + 3: a segunda linha fica centralizada, meia coluna deslocada */
-.person:nth-child(2) { margin-top:56px; }
-.person:nth-child(3) { margin-top:16px; }
-.person:nth-child(4) { margin-top:72px; }
-.person:nth-child(5) { margin-top:24px; }
-.person:nth-child(6) { margin-top:64px; }
-.person:nth-child(7) { margin-top:8px; }
+.cases .split-head { margin-bottom:64px; }
+
+/* Carrossel contínuo: roda sozinho, flutua e aceita arrastar */
+.people-marquee {
+  position:relative; z-index:1; overflow-x:auto; padding:14px 0 40px;
+  -webkit-mask-image:linear-gradient(90deg, transparent 0, #000 6%, #000 94%, transparent 100%);
+  mask-image:linear-gradient(90deg, transparent 0, #000 6%, #000 94%, transparent 100%);
+}
+.js .people-marquee { overflow:hidden; cursor:grab; touch-action:pan-y; -webkit-user-select:none; user-select:none; }
+.js .people-marquee.is-dragging { cursor:grabbing; }
+.people-marquee:focus-visible { outline-offset:-4px; border-radius:24px; }
+.people { list-style:none; display:flex; align-items:flex-start; gap:24px; width:max-content; padding:0 24px; will-change:transform; }
+.person { flex:0 0 clamp(220px, 21vw, 290px); }
+/* um alto, um baixo */
+.person:nth-child(even) { margin-top:64px; }
+.person-card { animation:bob 6.5s ease-in-out infinite; animation-delay:calc(var(--i, 0) * -0.9s); }
+.people-marquee.is-paused .person-card { animation-play-state:paused; }
+@keyframes bob { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-8px); } }
+.person-photo img { -webkit-user-drag:none; }
+.people-controls { display:none; align-items:center; justify-content:space-between; gap:16px; margin-top:4px; }
+.js .people-controls { display:flex; }
+.drag-hint { display:flex; align-items:center; gap:10px; font-size:13px; font-weight:500; color:var(--text); }
+.drag-hint svg { color:var(--green-dark); }
+.marquee-toggle {
+  width:42px; height:42px; border:0; border-radius:50%; cursor:pointer; flex-shrink:0;
+  display:grid; place-items:center; background:rgba(26,46,34,0.06); color:var(--ink); transition:background-color .2s;
+}
+.marquee-toggle:hover { background:rgba(26,46,34,0.11); }
+.marquee-toggle svg { grid-area:1 / 1; }
+.marquee-toggle .i-play { display:none; }
+.marquee-toggle[aria-pressed="true"] .i-play { display:block; }
+.marquee-toggle[aria-pressed="true"] .i-pause { display:none; }
 .person-photo { aspect-ratio:4 / 5; border-radius:26px; overflow:hidden; background:var(--paper-deep); margin-bottom:18px; box-shadow:var(--shadow-leaf); }
 .person-photo img { width:100%; height:100%; object-fit:cover; object-position:50% 28%; }
 .person h3 { font-size:19px; font-weight:600; letter-spacing:-0.025em; line-height:1.2; }
 .person p { font-size:14px; font-weight:400; line-height:1.45; color:var(--text); margin-top:5px; }
 
-.traits-label { margin-top:104px; font-size:13px; font-weight:500; color:var(--text); margin-bottom:0; padding-bottom:18px; }
+.traits-label { margin-top:88px; font-size:13px; font-weight:500; color:var(--text); margin-bottom:0; padding-bottom:18px; }
 .traits { list-style:none; display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); border-top:1px solid var(--line); }
 .trait { padding:28px 32px 0 0; }
 .trait + .trait { padding-left:32px; border-left:1px solid var(--line); }
@@ -362,7 +383,7 @@ button,input { font:inherit; color:inherit; }
 .join-grid { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:88px; align-items:center; }
 .join .eyebrow { color:var(--green-vivid); }
 .join .h2 { color:var(--paper); margin-bottom:26px; }
-.join .body { color:var(--text); }
+.join .body { color:rgba(247,244,236,0.76); }
 .next-steps { list-style:none; margin-top:44px; border-top:1px solid rgba(247,244,236,0.14); max-width:30em; }
 .next-steps li { display:grid; grid-template-columns:34px 1fr; gap:16px; align-items:center; padding:18px 0; border-bottom:1px solid rgba(247,244,236,0.14); font-size:16px; color:rgba(247,244,236,0.88); }
 .next-steps .n { width:30px; height:30px; border-radius:50%; display:grid; place-items:center; border:1.5px solid rgba(0,232,122,0.55); font-size:13px; font-weight:600; color:var(--green-vivid); font-variant-numeric:tabular-nums; }
@@ -456,12 +477,8 @@ button,input { font:inherit; color:inherit; }
   .chip-invite { display:none; }
   .origin-grid, .semear-grid, .split-head, .join-grid { grid-template-columns:1fr; gap:48px; }
   .origin-aside { position:static; }
-  .people {
-    flex-wrap:nowrap; justify-content:flex-start; gap:16px; overflow-x:auto; scroll-snap-type:x mandatory; scroll-padding:0 var(--gutter);
-    margin:0 calc(var(--gutter) * -1); padding:0 var(--gutter) 12px; scrollbar-width:none;
-  }
-  .people::-webkit-scrollbar { display:none; }
-  .person { flex:0 0 min(62vw, 280px); scroll-snap-align:start; margin-top:0 !important; }
+  .people { gap:16px; padding:0 16px; }
+  .person:nth-child(even) { margin-top:48px; }
   .traits { grid-template-columns:1fr; }
   .trait, .trait + .trait { padding:22px 0; border-left:0; border-bottom:1px solid var(--line); }
   .trait-spacer { display:none; }
@@ -506,7 +523,7 @@ button,input { font:inherit; color:inherit; }
 }
 @media (prefers-reduced-motion:reduce) {
   html { scroll-behavior:auto; }
-  .hero-broto { animation:none; }
+  .hero-broto, .person-card { animation:none; }
   .roll > span, .dock, .js .beat, .js .beat .beat-when, .nav-links, .nav-broto { transition:none; }
 }
 </style>
@@ -648,44 +665,59 @@ button,input { font:inherit; color:inherit; }
         </div>
         <p class="body">Todos vieram do Instituto Semear e hoje fazem parte do nosso time. É a prova de que investir nesses jovens dá frutos.</p>
       </div>
+    </div>
 
-      <ul class="people">
-        <li class="person">
-          <div class="person-photo"><img src="assets/web/ElvisRocha.jpg" alt="Elvis Rocha" width="720" height="720" loading="lazy"></div>
+    <div class="people-marquee" id="people-marquee" tabindex="0" role="region" aria-roledescription="carrossel" aria-label="Jovens Sementes que hoje trabalham na Salesforce">
+      <ul class="people" id="people-track">
+        <li class="person"><div class="person-card">
+          <div class="person-photo"><img src="assets/web/ElvisRocha.jpg" alt="Elvis Rocha" width="720" height="720" loading="lazy" draggable="false"></div>
           <h3>Elvis Rocha</h3>
           <p>Associate Technical Consultant Intern</p>
-        </li>
-        <li class="person">
-          <div class="person-photo"><img src="assets/web/FernandoOliveira.jpg" alt="Fernando Oliveira" width="720" height="720" loading="lazy"></div>
+        </div></li>
+        <li class="person"><div class="person-card">
+          <div class="person-photo"><img src="assets/web/FernandoOliveira.jpg" alt="Fernando Oliveira" width="720" height="720" loading="lazy" draggable="false"></div>
           <h3>Fernando Oliveira</h3>
           <p>Associate Technical Consultant Intern</p>
-        </li>
-        <li class="person">
-          <div class="person-photo"><img src="assets/web/RenataAlencar.jpg" alt="Renata Alencar" width="720" height="720" loading="lazy"></div>
+        </div></li>
+        <li class="person"><div class="person-card">
+          <div class="person-photo"><img src="assets/web/RenataAlencar.jpg" alt="Renata Alencar" width="720" height="720" loading="lazy" draggable="false"></div>
           <h3>Renata Alencar</h3>
           <p>Junior Associate Technical Consultant</p>
-        </li>
-        <li class="person">
-          <div class="person-photo"><img src="assets/web/SayaneLima.jpg" alt="Sayane Lima" width="720" height="720" loading="lazy"></div>
+        </div></li>
+        <li class="person"><div class="person-card">
+          <div class="person-photo"><img src="assets/web/SayaneLima.jpg" alt="Sayane Lima" width="720" height="720" loading="lazy" draggable="false"></div>
           <h3>Sayane Lima</h3>
           <p>Business Development Rep</p>
-        </li>
-        <li class="person">
-          <div class="person-photo"><img src="assets/web/GuilhermeDeLuca.jpg" alt="Guilherme de Luca" width="720" height="720" loading="lazy"></div>
+        </div></li>
+        <li class="person"><div class="person-card">
+          <div class="person-photo"><img src="assets/web/GuilhermeDeLuca.jpg" alt="Guilherme de Luca" width="720" height="720" loading="lazy" draggable="false"></div>
           <h3>Guilherme de Luca</h3>
           <p>Junior Associate Technical Consultant</p>
-        </li>
-        <li class="person">
-          <div class="person-photo"><img src="assets/web/FernandaMaronato.jpg" alt="Fernanda Maronato" width="512" height="512" loading="lazy"></div>
+        </div></li>
+        <li class="person"><div class="person-card">
+          <div class="person-photo"><img src="assets/web/FernandaMaronato.jpg" alt="Fernanda Maronato" width="512" height="512" loading="lazy" draggable="false"></div>
           <h3>Fernanda Maronato</h3>
           <p>Software Engineering AMTS</p>
-        </li>
-        <li class="person">
-          <div class="person-photo"><img src="assets/web/GeovanaVasconcelos.jpg" alt="Geovana Vasconcelos" width="720" height="720" loading="lazy"></div>
+        </div></li>
+        <li class="person"><div class="person-card">
+          <div class="person-photo"><img src="assets/web/GeovanaVasconcelos.jpg" alt="Geovana Vasconcelos" width="720" height="720" loading="lazy" draggable="false"></div>
           <h3>Geovana Vasconcelos</h3>
           <p>Sales Development Representative</p>
-        </li>
+        </div></li>
       </ul>
+    </div>
+
+    <div class="wrap">
+      <div class="people-controls">
+        <p class="drag-hint">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 8 4 12l4 4M16 8l4 4-4 4M4 12h16"/></svg>
+          Arraste para os lados para ver todos
+        </p>
+        <button class="marquee-toggle" id="marquee-toggle" type="button" aria-pressed="false" aria-controls="people-marquee" aria-label="Pausar o carrossel">
+          <svg class="i-pause" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1.2"/><rect x="14" y="5" width="4" height="14" rx="1.2"/></svg>
+          <svg class="i-play" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.2-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z"/></svg>
+        </button>
+      </div>
 
       <p class="traits-label">O que eles têm em comum</p>
       <ul class="traits">
@@ -1008,6 +1040,101 @@ if (reduceMotion || !('IntersectionObserver' in window)) {
   }, { rootMargin:'0px 0px -38% 0px' });
   beats.forEach(b => beatObserver.observe(b));
 }
+
+/* ---------- Carrossel dos casos de sucesso: roda sozinho, flutua e aceita arrastar ---------- */
+(function peopleMarquee() {
+  const viewport = document.getElementById('people-marquee');
+  const track = document.getElementById('people-track');
+  const toggle = document.getElementById('marquee-toggle');
+  const SPEED = 30; // px por segundo
+
+  const originals = [...track.children];
+  const cloneOf = el => { const c = el.cloneNode(true); c.setAttribute('aria-hidden', 'true'); return c; };
+  // A sequência que se repete precisa ter um número par de cards para o alto/baixo não quebrar na emenda
+  const base = originals.length % 2 ? [...originals, ...originals.map(cloneOf)] : [...originals];
+  base.slice(originals.length).forEach(c => track.appendChild(c));
+  const baseLen = base.length;
+  for (let k = 0; k < 2; k++) base.forEach(el => track.appendChild(cloneOf(el)));
+  [...track.children].forEach((el, i) => el.style.setProperty('--i', i));
+
+  let unitW = 1, x = 0, v = 0, last = 0, raf = 0, inView = false;
+  let dragging = false, hovering = false, paused = reduceMotion;
+  let startX = 0, startPos = 0, lastX = 0, lastT = 0, dragV = 0;
+
+  const measure = () => { unitW = track.children[baseLen].offsetLeft - track.children[0].offsetLeft || 1; };
+  const render = () => {
+    x = ((x % unitW) + unitW) % unitW;
+    track.style.transform = `translate3d(${-x}px, 0, 0)`;
+  };
+  const frame = now => {
+    const dt = Math.min(0.05, (now - last) / 1000);
+    last = now;
+    if (!dragging) {
+      const target = paused || hovering ? 0 : SPEED;
+      v += (target - v) * (1 - Math.exp(-dt * 2.4)); // inércia que volta suavemente à velocidade normal
+      x += v * dt;
+    }
+    render();
+    raf = requestAnimationFrame(frame);
+  };
+  const start = () => { if (!raf && inView && !document.hidden) { last = performance.now(); raf = requestAnimationFrame(frame); } };
+  const stop = () => { cancelAnimationFrame(raf); raf = 0; };
+
+  // Começa com o primeiro card alinhado à margem do título
+  measure();
+  const wrap = document.querySelector('#casos .wrap');
+  x = viewport.getBoundingClientRect().left - wrap.getBoundingClientRect().left - parseFloat(getComputedStyle(wrap).paddingLeft) + parseFloat(getComputedStyle(track).paddingLeft);
+  v = paused ? 0 : SPEED;
+  render();
+
+  window.addEventListener('resize', () => { const r = x / unitW; measure(); x = r * unitW; render(); });
+  new IntersectionObserver(([e]) => { inView = e.isIntersecting; inView ? start() : stop(); }).observe(viewport);
+  document.addEventListener('visibilitychange', () => document.hidden ? stop() : start());
+
+  // Arrastar com mouse ou dedo (rolagem vertical da página continua livre)
+  viewport.addEventListener('pointerdown', e => {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    dragging = true; dragV = 0;
+    startX = lastX = e.clientX; startPos = x; lastT = performance.now();
+    viewport.setPointerCapture(e.pointerId);
+    viewport.classList.add('is-dragging');
+  });
+  viewport.addEventListener('pointermove', e => {
+    if (!dragging) return;
+    const now = performance.now();
+    const instant = -(e.clientX - lastX) / Math.max(0.008, (now - lastT) / 1000);
+    dragV = dragV * 0.3 + instant * 0.7;
+    lastX = e.clientX; lastT = now;
+    x = startPos - (e.clientX - startX);
+    render();
+  });
+  const endDrag = () => {
+    if (!dragging) return;
+    dragging = false;
+    viewport.classList.remove('is-dragging');
+    v = performance.now() - lastT > 90 ? 0 : Math.max(-2400, Math.min(2400, dragV));
+  };
+  ['pointerup', 'pointercancel', 'lostpointercapture'].forEach(t => viewport.addEventListener(t, endDrag));
+
+  // Para enquanto o mouse está em cima, para dar tempo de ler
+  viewport.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') hovering = true; });
+  viewport.addEventListener('pointerleave', e => { if (e.pointerType === 'mouse') hovering = false; });
+
+  // Setas do teclado empurram um card para o lado
+  viewport.addEventListener('keydown', e => {
+    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    e.preventDefault();
+    v = (e.key === 'ArrowRight' ? 1 : -1) * 900;
+  });
+
+  const syncToggle = () => {
+    toggle.setAttribute('aria-pressed', String(paused));
+    toggle.setAttribute('aria-label', paused ? 'Retomar o carrossel' : 'Pausar o carrossel');
+    viewport.classList.toggle('is-paused', paused);
+  };
+  toggle.addEventListener('click', () => { paused = !paused; syncToggle(); });
+  syncToggle();
+})();
 
 /* ---------- Formulário de intenção de mentoria ---------- */
 const form = document.getElementById('mentor-form');
